@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models.base import Model
 from django.urls import reverse
 from datetime import date
+from django.contrib.auth.models import User
 
 # Create your models here.
 SERVICES = (
@@ -9,11 +10,23 @@ SERVICES = (
     ('OC', 'Oil Change'),
 )
 
+class Gas(models.Model):
+    gasType = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.gasType
+
+    def get_absolute_url(self):
+        return reverse("gas_detail", kwargs={"pk": self.id})
+    
+
 class Car(models.Model):
     model = models.CharField(max_length=50)
     brand = models.CharField(max_length=50)
     description = models.TextField(max_length=400)
     year = models.IntegerField()
+    gas = models.ManyToManyField(Gas)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.model
@@ -39,12 +52,3 @@ class Maintenance(models.Model):
     
     # class Meta:
     #     ordering: ['-date']
-class Gas(models.Model):
-    gasType = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.gasType
-
-    def get_absolute_url(self):
-        return reverse("gas_detail", kwargs={"pk": self.id})
-    
