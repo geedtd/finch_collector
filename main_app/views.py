@@ -1,5 +1,7 @@
-from django.shortcuts import render
-from .models import Car
+from django.shortcuts import redirect, render
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from .models import Car, Gas, Maintenance
+from .forms import MaintenanceForm
 
 # Add the following import
 # from django.http import HttpResponse
@@ -33,4 +35,33 @@ def home(request):
 
 def cars_detail(request, car_id):
     car = Car.objects.get(id=car_id)
-    return render(request, 'cars/detail.html', { 'car': car})
+    maintenance_form = MaintenanceForm()
+    return render(request, 'cars/detail.html', { 
+        'car': car, 'maintenance_form': maintenance_form
+    })
+
+class CarCreate(CreateView):
+    model = Car
+    fields = '__all__'
+    # success_url = '/cars/'
+
+class CarUpdate(UpdateView):
+  model = Car
+  # Let's disallow the renaming of a Car by excluding the name field!
+  fields = ['model', 'description', 'year']
+
+class CarDelete(DeleteView):
+  model = Car
+  success_url = '/cars/'
+
+def add_maintenance(request, car_id):
+  form = MaintenanceForm(request.POST)
+  if form.is_valid():
+    new_maintenance = form.save(commit=False)
+    new_maintenance.car_id = car_id
+    new_maintenance.save()
+  return redirect('cars_detail', car_id=car_id)
+
+class GasCreate(CreateView):
+  model = Gas
+  fields = __all__

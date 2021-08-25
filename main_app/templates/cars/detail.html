@@ -3,10 +3,19 @@
 
 {% block head %}
 <link 
+  href="https://cdn.jsdelivr.net/npm/mc-datepicker/dist/mc-calendar.min.css" 
+  rel="stylesheet" 
+/>
+<script 
+  src="https://cdn.jsdelivr.net/npm/mc-datepicker/dist/mc-calendar.min.js"
+>
+</script>
+<link 
   rel="stylesheet" 
   type="text/css" 
   href="{% static 'css/car-detail.css' %}"
 />
+<script defer src="{% static 'js/car-detail.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -19,7 +28,48 @@
       <h2>A {{ car.year }}  {{ car.brand }} {{car.model}}</h2>
     
     <p>{{ car.description }}</p>
+    <div class="car-actions">
+      <a href="{% url 'cars_update' car.id %}" class="btn warn">Edit</a>
+      <a href="{% url 'cars_delete' car.id %}" class="btn danger">Delete</a>
+    </div>
   </div>
+</section>
+<section>
+    <div>
+    <h3>Add A Maintenance Entry</h3>
+        <form 
+        action='{% url 'add_maintenance' car.id %}'
+        method='post'
+        class='subsection-content'
+        >
+        {% if car.serviced_this_month %}
+          <p>This {{car.model}} has not been serviced this month.</p>
+        {% else %}
+          <p>{{car.model}} might need servicing.</p>
+        {% endif %}
+        {% csrf_token %}
+        {{ maintenance_form.as_p }}
+        <button type = 'submit' class='btn submit'>Add To Maintenance Log</button>
+        </form>
+        <h2>Past Maintenance</h2>
+        {% if car.maintenance_set.all.count %}
+          </div>
+          <table>
+              <thead>
+              <tr><th>Date</th><th>Maintenance</th></tr>
+            </thead>
+            <tbody>
+              {% for maintenance in car.maintenance_set.all %}
+                <tr>
+                  <td>{{maintenance.date}}</td>
+                  <td>{{maintenance.get_service_display}}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <p>{{car.model}} has never been serviced :0</p>
+        {% endif %}
 </section>
 
 {% endblock %}
