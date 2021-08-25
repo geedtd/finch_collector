@@ -1,0 +1,25 @@
+{% extends 'base.html' %} 
+{% load static %} 
+
+{% block head %}
+
+{% endblock %}
+
+{% block content %}
+
+
+<section class="card-container">
+  {% for gas in gas_list %}
+  <div class="card" >
+    <div class="card-bg" ></div>
+    <a href="{% url 'gas_detail' gas.id %}">
+      <div class="card-content">
+        <h2>{{ gas.gasType }}</h2>
+        <p>A {{ gas.gasType }} gas</p>
+      </div>
+    </a>
+  </div>
+  {% endfor %}
+</section>
+
+{% endblock %}

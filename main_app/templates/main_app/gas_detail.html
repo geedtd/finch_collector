@@ -1,0 +1,20 @@
+{% extends 'base.html' %} 
+{% load static %} 
+
+{% block head %}
+
+{% endblock %}
+
+{% block content %}
+  
+<div class="card" >
+  <div class="card-bg" ></div>
+  <div class="card-content">
+    <h2>{{ gas.gasType }}</h2>
+    <p>A {{ gas.gasType }} gas</p>
+  </div>
+</div>
+<a href="{% url 'gas_update' gas.id %}" class="btn warn">Edit</a>
+<a href="{% url 'gas_delete' gas.id %}" class="btn danger">Delete</a>
+
+{% endblock %}

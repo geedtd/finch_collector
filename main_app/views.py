@@ -1,7 +1,9 @@
+# from _typeshed import HasFileno
 from django.shortcuts import redirect, render
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import Car, Gas, Maintenance
 from .forms import MaintenanceForm
+from django.views.generic import ListView, DetailView
 
 # Add the following import
 # from django.http import HttpResponse
@@ -64,4 +66,18 @@ def add_maintenance(request, car_id):
 
 class GasCreate(CreateView):
   model = Gas
-  fields = __all__
+  fields = '__all__'
+
+class GasList(ListView):
+  model = Gas
+
+class GasDetail(DetailView):
+  model = Gas
+
+class GasUpdate(UpdateView):
+  model = Gas
+  fields = ['gasType']
+
+class GasDelete(DeleteView):
+  model = Gas
+  success_url = '/gas/'
